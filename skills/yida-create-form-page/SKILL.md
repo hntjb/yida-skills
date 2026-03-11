@@ -397,12 +397,10 @@ format 格式：
 
 1. 准备字段定义 JSON 文件
 2. 读取项目根目录的 `.cache/cookies.json` 获取登录态（包含 corpId）；若不存在则自动调用 `login.py` 触发扫码登录
-3. 调用 `saveFormSchemaInfo` 接口创建空白表单，获取 formUuid；根据响应体 `errorCode` 自动处理异常：
-   - `errorCode: "TIANSHU_000030"`（csrf 校验失败）→ 自动刷新 csrf_token 后重试
-   - `errorCode: "307"`（登录过期）→ 自动重新登录后重试
+3. 调用 `saveFormSchemaInfo` 接口创建空白表单，获取 formUuid；根据响应体 `errorCode` 自动处理异常（详见 `yida-login` 技能文档「错误处理机制」章节）
 4. 根据字段定义生成表单 Schema JSON（SerialNumberField 的 formula 会自动使用 corpId、appType、formUuid 和 fieldId 构建）
-5. 调用 `saveFormSchema` 接口保存 Schema；同样根据响应体 `errorCode` 自动处理异常（同上）
-6. 调用 `updateFormConfig` 接口更新表单配置（MINI_RESOURCE = 0）；同样根据响应体 `errorCode` 自动处理异常（同上）
+5. 调用 `saveFormSchema` 接口保存 Schema；同样根据响应体 `errorCode` 自动处理异常
+6. 调用 `updateFormConfig` 接口更新表单配置（MINI_RESOURCE = 0）；同样根据响应体 `errorCode` 自动处理异常
 
 ### update 模式
 
