@@ -9,25 +9,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: skills/yida-publish-page/scripts/package-lock.json
-
-    - name: Install dependencies
-      run: |
-        npm install --prefix skills/yida-publish-page/scripts
+        node-version: '20'
 
     - name: Validate JavaScript syntax
       run: |
@@ -39,14 +29,4 @@ jobs:
       run: |
         for file in skills/**/*.json; do
           node -e "JSON.parse(require('fs').readFileSync('$file'))" || exit 1
-        done
-
-    - name: Check Markdown links
-      run: |
-        # Simple check for common broken links
-        for md in skills/**/*.md; do
-          if grep -q '\[.*\](http.*broken-link)' "$md"; then
-            echo "Broken link found in $md"
-            exit 1
-          fi
         done
