@@ -114,6 +114,36 @@ AI 生成灯谜图片，用户猜答案，猜错了有 AI 幽默提示。
 ---
 
 
+## 贡献指南
+
+欢迎提交 PR！请确保 CI 检查通过。
+
+### 本地测试
+
+```bash
+node --check skills/*/scripts/*.js
+```
+
+---
+
+## 示例代码
+
+详见 `examples/` 目录：
+
+| 示例 | 说明 |
+|------|------|
+| `examples/contact-form/` | 留资表单完整示例 |
+
+---
+
+## 常见问题
+
+**Q: 运行脚本报错 "node_modules not found"？**
+> 需要先安装依赖：`npm install --prefix skills/yida-publish-page/scripts`
+
+**Q: 编译报错如何排查？**
+> 错误信息会显示具体行号和列号
+
 ## License
 
 [MIT](./LICENSE) © 2026 天晟
