@@ -35,6 +35,7 @@
   - [isViewPage](#isviewpage) - 判断是否查看页面
   - [loadScript](#loadscript) - 动态加载脚本
   - [openPage](#openpage) - 打开新页面
+  - [router.push](#router.push) - 页面路由跳转工具
   - [previewImage](#previewimage) - 图片预览
   - [toast](#toast) - 信息提醒
 
@@ -930,6 +931,63 @@ export function someFunctionName() {
   this.utils.openPage('https://www.dingtalk.com');
 }
 ```
+
+---
+
+### router.push
+
+**描述**：页面路由跳转工具。支持两种常见方式：1.跳转到完整 URL，2.跳转到同一应用内的表单页或自定义页。
+
+参数说明：
+
+| 参数位置 | 说明                                              |
+| :------- | :------------------------------------------------ |
+| 参数 1   | 完整 URL，或同应用内页面 ID                       |
+| 参数 2   | 携带的跳转参数对象                                |
+| 参数 3   | 是否新开页面，`true` 为新开，`false` 为当前页跳转 |
+| 参数 4   | 是否是外部网址，仅在传完整 URL 时使用             |
+
+用法一：跳转完整 URL
+
+```javascript
+/**
+ * 参数1：完整 url
+ * 参数2：携带跳转参数
+ * 参数3：是否新页面打开，true / false
+ * 参数4：是否是网址
+ */
+this.utils.router.push('https://yeyi...', {}, true, true);
+```
+
+用法二：跳转同应用内页面
+
+```javascript
+/**
+ * 参数1：表单页面 ID，必须是同一个应用内
+ * 参数2：携带跳转参数
+ * 参数3：是否新页面打开，true / false
+ */
+this.utils.router.push('FORM-WC96669...', {}, true);
+```
+
+推荐写法：
+
+```javascript
+// 同应用内跳转到后台管理页，当前页打开
+this.utils.router.push('FORM-XXX', {
+  isRenderNav: false,
+  corpid: 'dingxxxxxxxx'
+}, false);
+
+// 跳转外部网址，当前页打开
+this.utils.router.push('https://example.com', {}, false, true);
+```
+
+使用建议：
+
+- 管理系统内部页面切换，优先使用 `false`，避免新开页面。
+- 当跳转目标是同应用内的自定义页或表单页时，优先传页面 ID，不要手拼完整 URL。
+- 当跳转目标是外部网址时，第四个参数传 `true`，明确告诉路由工具这是一个网址。
 
 ---
 
