@@ -384,6 +384,7 @@ this.utils.yida.searchFormDatas({
 | `getLoginUserId` / `getLoginUserName` | 获取当前用户 | 记录操作人、数据权限控制 |
 | `isMobile` | 判断移动端 | 响应式布局适配 |
 | `openPage` | 打开新页面 | 页面跳转、外链打开 |
+| `router.push` | 页面路由跳转工具 | 页面路由跳转、避免新开页面 |
 | `previewImage` | 图片预览 | 图片查看、多图轮播 |
 | `loadScript` | 动态加载脚本 | 引入第三方库（如二维码生成） |
 
