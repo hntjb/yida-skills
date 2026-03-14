@@ -331,19 +331,14 @@ var styles = {
 };
 ```
 
-11. **清除默认 padding**：宜搭自定义页面容器有默认 padding，需要强制覆盖为 0：
+11. **清除默认 padding 和圆角**：宜搭自定义页面容器有默认 padding 和圆角，需要强制覆盖：
 ```javascript
 var styles = {
   container: { 
-    padding: '0 16px',  // 先清除默认padding，再设置自己的padding
+    padding: '0 16px',
+    borderRadius: '0 !important',  // 清除默认圆角
     minHeight: '100vh'
   }
-};
-
-// 或者使用 !important 强制覆盖
-var containerStyle = {
-  padding: '12px !important',
-  minHeight: '100vh'
 };
 ```
 
