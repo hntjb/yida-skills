@@ -218,7 +218,7 @@ this.utils.yida.updateFormData({
 | :--- | :--- | :--- | :--- | :--- |
 | formUuid | String | 是 | 表单ID | `FORM-XXX` |
 | currentPage | Number | 否 | 当前页，默认 1 | `1` |
-| pageSize | Number | 否 | 每页记录数，默认 10，最大 100 | `10` |
+| pageSize | Number | 否 | 每页记录数，默认 10，**最大 100，超过 100 会报错** | `10` |
 | searchFieldJson | String | 否 | 根据表单内组件值查询（JSON字符串） | `JSON.stringify({ textField_xxx: '值' })` |
 
 **请求示例**：
@@ -325,7 +325,7 @@ this.utils.yida.getFormDataById({
 | formUuid | String | 是 | 表单ID | `FORM-XXX` |
 | searchFieldJson | String | 否 | 根据表单内组件值查询（JSON字符串） | `JSON.stringify({ textField_xxx: '值' })` |
 | currentPage | Number | 否 | 当前页，默认 1 | `1` |
-| pageSize | Number | 否 | 每页记录数，默认 10，最大 100 | `10` |
+| pageSize | Number | 否 | 每页记录数，默认 10，**最大 100，超过 100 会报错** | `10` |
 | originatorId | String | 否 | 根据数据提交人工号查询 | `'2134'` |
 | createFrom | String | 否 | 创建时间范围起始，格式 yyyy-MM-dd | `'2024-01-01'` |
 | createTo | String | 否 | 创建时间范围结束，格式 yyyy-MM-dd | `'2024-02-01'` |
@@ -540,7 +540,7 @@ this.utils.yida.deleteProcessInstance({
 | instanceStatus | String | 否 | 实例状态 | `'RUNNING'` |
 | approvedResult | String | 否 | 流程审批结果 | `'agree'` |
 | currentPage | Number | 否 | 当前页，默认 1 | `1` |
-| pageSize | Number | 否 | 每页记录数，默认 10，最大 100 | `10` |
+| pageSize | Number | 否 | 每页记录数，默认 10，**最大 100，超过 100 会报错** | `10` |
 | originatorId | String | 否 | 流程发起人工号 | `'2134'` |
 | createFrom | String | 否 | 创建时间范围起始，格式 yyyy-MM-dd | `'2024-01-01'` |
 | createTo | String | 否 | 创建时间范围结束，格式 yyyy-MM-dd | `'2024-02-01'` |
@@ -588,13 +588,15 @@ this.utils.yida.getProcessInstances({
 | instanceStatus | String | 否 | 实例状态 | `'RUNNING'` |
 | approvedResult | String | 否 | 流程审批结果 | `'agree'` |
 | currentPage | Number | 否 | 当前页，默认 1 | `1` |
-| pageSize | Number | 否 | 每页记录数，默认 10，最大 100 | `10` |
+| pageSize | Number | 否 | 每页记录数，默认 10，**最大 100，超过 100 会报错** | `10` |
 | originatorId | String | 否 | 流程发起人工号 | `'2134'` |
 | createFrom | String | 否 | 创建时间范围起始，格式 yyyy-MM-dd | `'2024-01-01'` |
 | createTo | String | 否 | 创建时间范围结束，格式 yyyy-MM-dd | `'2024-02-01'` |
 | modifiedFrom | String | 否 | 修改时间范围起始，格式 yyyy-MM-dd | `'2024-01-01'` |
 | modifiedTo | String | 否 | 修改时间范围结束，格式 yyyy-MM-dd | `'2024-02-01'` |
 | searchFieldJson | String | 否 | 根据表单内组件值查询（JSON字符串） | `JSON.stringify({ textField_xxx: '值' })` |
+
+> ⚠️ **注意**：`pageSize` 最大值为 **100**，禁止设置超过 100 的值，否则接口会报错。
 
 **请求示例**：
 

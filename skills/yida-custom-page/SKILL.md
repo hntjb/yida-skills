@@ -291,7 +291,8 @@ this.forceUpdate();
 4. **错误处理**：所有 API 调用（`this.utils.yida.*`、`fetch`）必须使用 `.catch()` 处理异常，并通过 `this.utils.toast({ title: message, type: 'error' })` 向用户展示错误提示
 5. **样式方式**：所有样式通过 JavaScript 对象定义（内联样式），在 `renderJsx` 中通过 `style` 属性应用，不使用外部 CSS 文件
 6. **异步操作**：可以使用 `async/await` 语法，Babel 编译会自动转换为 ES5 兼容代码
-6. **输入框必须使用非受控组件**：在宜搭环境中，`<input>` 的 `value` 属性绑定状态后，每次 `onChange` 触发 `setCustomState` → `forceUpdate` → 整个 JSX 重渲染，会导致输入框失焦或输入被吞掉，用户无法正常输入文字。**正确做法**：使用 `defaultValue` 代替 `value`，在 `onChange` 中仅更新 `_customState` 而不调用 `setCustomState`（避免触发重渲染），需要清空输入框时通过 `document.getElementById` 直接操作 DOM。示例：
+7. **pageSize 不得超过最大值**：调用 `searchFormDatas`、`searchFormDataIds`、`getProcessInstances`、`getProcessInstanceIds` 等分页接口时，`pageSize` 最大值为 **100**，超过会导致接口报错。禁止将 `pageSize` 设置为超过 100 的值，推荐使用 `10`～`100` 之间的合理值。
+8. **输入框必须使用非受控组件**：在宜搭环境中，`<input>` 的 `value` 属性绑定状态后，每次 `onChange` 触发 `setCustomState` → `forceUpdate` → 整个 JSX 重渲染，会导致输入框失焦或输入被吞掉，用户无法正常输入文字。**正确做法**：使用 `defaultValue` 代替 `value`，在 `onChange` 中仅更新 `_customState` 而不调用 `setCustomState`（避免触发重渲染），需要清空输入框时通过 `document.getElementById` 直接操作 DOM。示例：
 
 ```javascript
 // ❌ 错误：受控组件，每次输入都触发重渲染导致无法输入
