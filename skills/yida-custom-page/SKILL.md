@@ -306,6 +306,15 @@ var inputEl = document.getElementById("my-input");
 if (inputEl) { inputEl.value = ""; }
 ```
 
+9. **DateField 必须是时间戳格式**：保存日期字段时，值必须是 **时间戳（毫秒）**，不能是字符串。示例：
+```javascript
+// ❌ 错误：字符串格式
+dateField_xxx: '2024-01-15'
+
+// ✅ 正确：时间戳格式
+dateField_xxx: new Date().getTime()
+```
+
 ---
 
 ## API 参考
