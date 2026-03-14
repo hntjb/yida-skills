@@ -15,10 +15,18 @@ import sys
 
 
 def find_project_root(start_dir):
-    """从 start_dir 向上查找含 README.md 或 .git 的项目根目录。"""
     current = start_dir
     while True:
-        if os.path.exists(os.path.join(current, "README.md")) or os.path.isdir(os.path.join(current, ".git")):
+        if ".claude/skills" in current:
+            parent = os.path.dirname(current)
+            if parent == current:
+                return start_dir
+            current = parent
+            continue
+
+        if os.path.exists(os.path.join(current, "README.md")) or os.path.isdir(
+            os.path.join(current, ".git")
+        ):
             return current
         parent = os.path.dirname(current)
         if parent == current:

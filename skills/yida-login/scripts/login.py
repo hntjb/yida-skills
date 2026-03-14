@@ -11,6 +11,13 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 def find_project_root(start_dir):
     current = start_dir
     while True:
+        if ".claude/skills" in current:
+            parent = os.path.dirname(current)
+            if parent == current:
+                return start_dir
+            current = parent
+            continue
+
         if os.path.exists(os.path.join(current, "README.md")) or os.path.isdir(
             os.path.join(current, ".git")
         ):
