@@ -143,7 +143,7 @@ node publish.js <appType> <formUuid> <源文件路径>
 
 以下是一个完整自定义页面示例，包含状态管理、生命周期钩子、渲染函数
 
-```javascript
+```jsx
 // ============================================================
 // 状态管理
 // ============================================================
@@ -203,6 +203,10 @@ export function didUnmount() {
   // 清理逻辑
 }
 
+export function handleSubmit(e) {
+  this.setCustomState({ submitted: true });
+  this.utils.toast({ title: '提交成功', type: 'success' });
+}
 // ============================================================
 // 渲染
 // ============================================================
@@ -220,6 +224,7 @@ export function renderJsx() {
       <div style={{ display: "none" }}>{timestamp}</div>
 
       {/* 页面内容写在这里 */}
+      <div onClick={(e) => {this.handleSubmit(e)}>提交</div>
     </div>
   );
 }
@@ -259,19 +264,7 @@ this.forceUpdate();
 
 ### 编码注意事项
 
-1. **箭头函数捕获 this**：同 react 的 render 函数一样，在 `renderJsx` 内部定义的事件处理函数中，**必须使用箭头函数**自动捕获 `this`：
-   ```javascript
-   export function renderJsx() {
-     // ✅ 正确：箭头函数自动捕获 this
-     const handleSubmit = () => {
-       this.setCustomState({ submitted: true });
-       this.utils.toast({ title: '提交成功', type: 'success' });
-     };
-     return <button onClick={handleSubmit}>提交</button>;
-   }
-   ```
-
-2. **自定义方法必须用 `export function` 定义**：凡是需要在方法内部使用 `this`（包括 `this.utils.yida.*`、`this.setCustomState` 等）的自定义方法，**必须且只能**使用 `export function 方法名() {}` 的形式定义，调用时使用 `this.方法名()`。**禁止**使用 `const fn = () => {}`、`const fn = function() {}` 等形式定义需要访问 `this` 的方法，这些形式无法被宜搭运行时正确绑定 `this`：
+1. **自定义方法必须用 `export function` 定义**：凡是需要在方法内部使用 `this`（包括 `this.utils.yida.*`、`this.setCustomState` 等）的自定义方法，**必须且只能**使用 `export function 方法名() {}` 的形式定义，调用时使用 `this.方法名()`。**禁止**使用 `const fn = () => {}`、`const fn = function() {}` 等形式定义需要访问 `this` 的方法，这些形式无法被宜搭运行时正确绑定 `this`：
    ```javascript
    // ✅ 正确：export function + this.方法名() 调用
    export function didMount() {
@@ -289,7 +282,7 @@ this.forceUpdate();
      this.utils.yida.searchFormDatas(...);  // 报错：this is undefined
    }
 
-   // ❌ 错误②：箭头函数/函数表达式形式，无法被宜搭运行时绑定 this，禁止使用
+   // ❌ 错误②：箭头函数/函数表达式形式，缺少 export，无法被宜搭运行时绑定 this，禁止使用
    const loadStatistics = () => {
      this.utils.yida.searchFormDatas(...);  // 报错：this is undefined
    };
@@ -297,6 +290,31 @@ this.forceUpdate();
      this.utils.yida.searchFormDatas(...);  // 报错：this is undefined
    };
    ```
+2. **【严格禁止】事件绑定必须使用箭头函数包裹**：在 `renderJsx` 中绑定任何事件处理器（`onClick`、`onChange`、`onSubmit` 等）时，**必须且只能**使用箭头函数 `(e) => { this.方法名(e) }` 的形式，**严禁**直接写 `this.方法名` 作为事件处理器，否则 `this` 会丢失导致运行时报错：
+
+   ```javascript
+   export function handleSubmit(e) {
+     this.setCustomState({ submitted: true });
+     this.utils.toast({ title: '提交成功', type: 'success' });
+   }
+
+   // ✅ 正确：箭头函数包裹，this 正确捕获
+   export function renderJsx() {
+     return <button onClick={(e) => { this.handleSubmit(e); }}>提交</button>;
+   }
+
+   // ❌ 错误①：直接传方法引用，this 丢失，运行时报错，绝对禁止！
+   export function renderJsx() {
+     return <button onClick={this.handleSubmit}>提交</button>;
+   }
+
+   // ❌ 错误②：使用 .bind(this) 绑定，虽然能运行但不符合规范，禁止使用！
+   export function renderJsx() {
+     return <button onClick={function() { this.handleSubmit(); }.bind(this)}>提交</button>;
+   }
+   ```
+
+   > **生成代码时的自检清单**：检查 `renderJsx` 中所有 `onClick`、`onChange`、`onSubmit` 等事件属性，确保每一个都是 `(e) => { this.xxx(e) }` 形式，不存在任何 `onClick={this.xxx}` 的写法。
 
 3. **输入法组合输入处理**：使用 `_isComposing` 标记配合 `compositionstart` / `compositionend` 事件，正确处理中文输入法的组合输入状态，避免输入过程中触发提交
 4. **定时器清理**：在 `didUnmount` 中必须清理所有通过 `setInterval` / `setTimeout` 创建的定时器，防止内存泄漏
@@ -357,6 +375,22 @@ this.forceUpdate();
     ```
 
 15. **iframe 嵌入表单 URL 规范**：在自定义页面中通过 iframe 嵌入宜搭表单时，需使用正确的 URL 格式：
+
+    | 场景 | URL 格式 |
+    |------|----------|
+    | 表单提交页 | `{base_url}/{appType}/submission/{formUuid}` |
+    | 数据管理页（列表） | `{base_url}/{appType}/workbench/{formUuid}?iframe=true` |
+    | 数据管理页（指定视图） | `{base_url}/{appType}/workbench/{formUuid}?viewUuid={viewUuid}&iframe=true` |
+
+    ```javascript
+    // ❌ 错误：formDetail 是表单详情页，不是数据列表
+    const wrongUrl = `${baseUrl}/${appType}/formDetail/${formUuid}`;
+
+    // ✅ 正确：workbench 是运行态数据管理页
+    const listUrl = `${baseUrl}/${appType}/workbench/${formUuid}?iframe=true`;
+    ```
+
+    > `viewUuid` 可选，从宜搭「数据管理」→「报表视图」页面的 URL 中获取，不传则使用默认视图。
 
 ---
 
